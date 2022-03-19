@@ -1,8 +1,20 @@
 const apiKey = "a22a698f45541df9c65139ef895958ef\n";
 let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=Berlin&appid=${apiKey}&units=metric`;
-
 axios.get(apiUrl).then(displayTemperature);
 
+getCurrentPosition();
+
+function getCurrentPosition() {
+    navigator.geolocation.getCurrentPosition(showPosition)
+}
+function showPosition(position) {
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}`;
+    axios.get(apiUrl).then(displayCity);
+}
+function displayCity(response) {
+    let cityName = document.querySelector("#cityName");
+    cityName.innerHTML = response.data.name;
+}
 
 
 let formElement = document.querySelector("#locationForm");
@@ -13,8 +25,8 @@ function showCityWeather (event) {
     console.log(city);
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
     axios.get(apiUrl).then(displayTemperature);
-
 }
+
 
 function displayTemperature(response) {
     console.log(response);
