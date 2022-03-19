@@ -58,7 +58,7 @@ body {
 }
 .fa-main {
     font-size: 60px; !important;
-    padding-left: 130px;
+    text-align: right;
     padding-top: 20px;
 }
 .card {

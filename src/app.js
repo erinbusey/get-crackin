@@ -1,5 +1,5 @@
 const apiKey = "a22a698f45541df9c65139ef895958ef\n";
-let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=London&appid=${apiKey}&units=metric`;
+let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=Berlin&appid=${apiKey}&units=metric`;
 
 function displayTemperature(response) {
     console.log(response);
@@ -14,9 +14,15 @@ function displayTemperature(response) {
     let humidityElement = document.querySelector("#humidity");
     humidityElement.innerHTML = response.data.main.humidity;
 
+    // Set Date & Time
     let dateElement = document.querySelector("#dateTime");
     dateElement.innerHTML = formatDate(response.data.dt*1000);
+
+    // Set Icon
+    let iconElement = document.querySelector("#iconMain");
+    iconElement.setAttribute("src",`https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`);
 }
+
 function formatDate(timeStamp) {
     let date = new Date(timeStamp);
     console.log(date);
