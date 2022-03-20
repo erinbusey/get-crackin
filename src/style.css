@@ -33,6 +33,7 @@ body {
     position: relative;
     top: -20px;
     font-size: 1.5rem;
+    left: -12px;
 }
 .date-time{
     font-weight: 500;
@@ -57,9 +58,13 @@ body {
     list-style: none;
 }
 .fa-main {
-    font-size: 60px; !important;
+    font-size: 70px; !important;
     text-align: right;
     padding-top: 20px;
+}
+.big-weather-icon {
+    width: 120px;
+
 }
 .card {
     margin-top: 50px;
@@ -82,5 +87,8 @@ body {
 }
 .weather-forecast-preview {
     margin-top: 30px;
+}
+.item-day {
+    font-size: 12px;
 }
 
