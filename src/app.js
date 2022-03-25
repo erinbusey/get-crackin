@@ -10,7 +10,6 @@ function getCurrentPosition() {
 // Get the City Name from the openweathermap API
 function getCityName(position) {
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}`;
-    //displayForecast(position.coords);
     axios.get(apiUrl).then(displayCity);
 }
 
@@ -24,6 +23,7 @@ function displayCity(response) {
 
 // Display Weather Info / Time / Big Icon
 function displayTemperatureAndTimeAndIcon(response) {
+    console.log(response);
     // Set the weather data in HTML
     let temperatureElement = document.querySelector("#bigTemp");
     temperatureElement.innerHTML = Math.round(response.data.main.temp);
@@ -43,24 +43,26 @@ function displayTemperatureAndTimeAndIcon(response) {
     // Set Icon
     let iconElement = document.querySelector("#iconMain");
     iconElement.setAttribute("src",`https://vigorous-mcclintock-84a9de.netlify.app/icons/${response.data.weather[0].icon}.svg`);
+
+    getForecast(response.data.coord);
 }
 // End of initial functions
 
 // Form Submit
 let formElement = document.querySelector("#locationForm");
 formElement.addEventListener("submit", showCityWeather);
+
 function showCityWeather(event) {
     event.preventDefault();
     let city = document.querySelector("#cityInput").value;
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(displayTemperature);
+    axios.get(apiUrl).then(displayTemperatureAndTimeAndIcon);
 }
 
 
 // Format Date from Unix Timestamp
 function formatDate(timeStamp) {
     let date = new Date(timeStamp);
-    console.log(date);
     let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     let day = days[date.getDay()];
 
@@ -74,28 +76,47 @@ function formatDate(timeStamp) {
 }
 
 // Display 7 day Forecast
-function displayForecast(coords) {
+
+function getForecast(position) {
+    let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${position.lat}&lon=${position.lon}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayForecast);
+}
+function displayForecast(response) {
+    let forecastDays = response.data.daily;
     let forecastElement = document.querySelector("#displayForecast");
-    let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     let forecastHTML = "";
-    days.forEach(function(day) {
-        forecastHTML = forecastHTML + `   
+    forecastDays.forEach(function(day, index) {
+        if (index <= 5){
+            let dayName = getDayFromTimestamp(day.dt);
+            let mathTemp = Math.round(day.temp.day);
+            forecastHTML = forecastHTML + `   
                 <div class="col-2">
                     <div class="weather-forecast-item">
                         <div class="item-day">
-                            ${day}
+                            ${dayName}
                         </div>
                         <div class="item-icon">
-                            <i class="fas fa-bolt"></i>
+                            <img src="https://vigorous-mcclintock-84a9de.netlify.app/icons/${day.weather[0].icon}.svg" width="40px">
                         </div>
                         <div class="item-temp">
-                            20°
+                            ${mathTemp}
                         </div>
                     </div>
                 </div>`;
+
+        }
+
     });
     forecastElement.innerHTML = forecastHTML;
 }
+function getDayFromTimestamp(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    let day = days[date.getDay()];
+    return day;
+}
+
+
 
 
 
