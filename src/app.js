@@ -1,6 +1,7 @@
 const apiKey = "a22a698f45541df9c65139ef895958ef\n";
 getCurrentPosition();
 
+
 // Get current position / Lat/Long
 function getCurrentPosition() {
     // Get Coords from Navigator Geolocation and then execute the "showPosition" Function
@@ -9,6 +10,7 @@ function getCurrentPosition() {
 
 // Get the City Name from the openweathermap API
 function getCityName(position) {
+    console.log(position);
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}`;
     axios.get(apiUrl).then(displayCity);
 }
@@ -114,6 +116,39 @@ function getDayFromTimestamp(timestamp) {
     let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     let day = days[date.getDay()];
     return day;
+}
+
+function initMap() {
+    const myLatlng = { lat: 1.363, lng: 21.044 };
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 4,
+        center: myLatlng,
+    });
+    // Create the initial InfoWindow.
+    let infoWindow = new google.maps.InfoWindow({
+        content: "Go Here",
+        position: myLatlng,
+    });
+
+    infoWindow.open(map);
+    // Configure the click listener.
+    map.addListener("click", (mapsMouseEvent) => {
+        // Close the current InfoWindow.
+        infoWindow.close();
+        // Create a new InfoWindow.
+        getWeatherOfLocation(mapsMouseEvent.latLng.toJSON());
+        infoWindow = new google.maps.InfoWindow({
+            position: mapsMouseEvent.latLng,
+        });
+        infoWindow.setContent(
+            "Go here"
+        );
+        infoWindow.open(map);
+    });
+}
+
+function getWeatherOfLocation(data) {
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lng}&appid=${apiKey}&units=metric`).then(displayTemperatureAndTimeAndIcon);
 }
 
 
